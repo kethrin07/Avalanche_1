@@ -11,33 +11,41 @@ contract TokenSale {
         price = initialPrice;
     }
 
+    // Function to buy tokens
     function buyTokens(uint amount) public payable {
-        require(amount > 0, "Amount must be greater than zero");
-        require(msg.value == amount * price, "Incorrect amount sent");
-
-        balances[msg.sender] += amount;
+        // Require statements to check conditions before proceeding
+        require(amount > 0, "Amount must be greater than zero"); // Ensure the amount of tokens is greater than zero
+        require(msg.value == amount * price, "Incorrect amount sent"); // Ensure the correct amount of Ether is sent
+        
+        balances[msg.sender] += amount; // Update the balance of the buyer
     }
 
+    // Function for the owner to withdraw funds
     function withdrawFunds(uint amount) public {
-        require(msg.sender == owner, "Only the owner can withdraw funds");
-        require(amount <= address(this).balance, "Insufficient contract balance");
-
-        payable(msg.sender).transfer(amount);
+        // Require statements to check conditions before proceeding
+        require(msg.sender == owner, "Only the owner can withdraw funds"); // Ensure only the owner can call this function
+        require(amount <= address(this).balance, "Insufficient contract balance"); // Ensure the contract has enough balance
+        
+        payable(msg.sender).transfer(amount); // Transfer the specified amount to the owner
     }
 
+    // Function to set a new token price
     function setPrice(uint newPrice) public {
+        // Require statement to ensure only the owner can call this function
         require(msg.sender == owner, "Only the owner can set the price");
 
-        // Use assert to check for valid price range
-        assert(newPrice > 0 && newPrice <= 1000);
-
-        price = newPrice;
+        // Assert statement to check for valid price range
+        assert(newPrice > 0 && newPrice <= 1000); // Ensure the new price is within a reasonable range
+        
+        price = newPrice; // Update the token price
     }
 
-    function emergencyStop() view public {
+    // Function to stop the contract in an emergency
+    function emergencyStop() public view {
+        // Require statement to ensure only the owner can call this function
         require(msg.sender == owner, "Only the owner can stop the contract");
 
-        // Use revert with custom message to stop contract
-        revert("Contract stopped by owner");
+        // Revert statement to halt the function execution with a custom message
+        revert("Contract stopped by owner"); // Indicate that the contract is stopped
     }
 }
